@@ -75,7 +75,8 @@ const CombinedNavbar = () => {
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = () => {
+    const handleClickOutside = (e) => {
+      // Only close if click is outside dropdowns
       if (isTopMenuOpen || isHelpOpen || isLangOpen || isShipOpen) {
         setIsTopMenuOpen(false);
         setIsHelpOpen(false);
@@ -90,7 +91,8 @@ const CombinedNavbar = () => {
   }, [isTopMenuOpen, isHelpOpen, isLangOpen, isShipOpen]);
 
   // Toggle dropdowns for top navbar
-  const toggleDropdown = (dropdown) => {
+  const toggleDropdown = (dropdown, e) => {
+    e.stopPropagation();
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
     setIsHelpOpen(dropdown === 'help' && activeDropdown !== 'help');
     setIsLangOpen(dropdown === 'lang' && activeDropdown !== 'lang');
@@ -99,14 +101,14 @@ const CombinedNavbar = () => {
 
   // Categories for the hamburger menu
   const categories = [
-    { name: 'Electronics' },
-    { name: 'Fashion' },
-    { name: 'Home & Kitchen' },
-    { name: 'Beauty' },
-    { name: 'Sports' },
-    { name: 'Books'},
-    { name: 'Toys'},
-    { name: 'Automotive'},
+    { name: 'Electronics', icon: '📱' },
+    { name: 'Fashion', icon: '👕' },
+    { name: 'Home & Kitchen', icon: '🏠' },
+    { name: 'Beauty', icon: '💄' },
+    { name: 'Sports', icon: '⚽' },
+    { name: 'Books', icon: '📚' },
+    { name: 'Toys', icon: '🧸' },
+    { name: 'Automotive', icon: '🚗' },
   ];
 
   // Help options
@@ -160,23 +162,22 @@ const CombinedNavbar = () => {
             </button>
             
             <div className="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 px-0 py-1 
-              rounded-md bg-blue-500 text-gray-300 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 px-0 py-1 rounded-md bg-blue-500 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <div className="text-xl  font-bold w200 text-indigo-400 tracking-tight ml-2">Brand</div>
+              <div className="text-xl font-bold text-indigo-400 tracking-tight ml-2">Brand</div>
             </div>
           </div>
 
           {/* Search Section - Desktop */}
           <div className="hidden md:block flex-1 max-w-2xl mx-4 md:mx-8">
-            <div className="relative group flex">
+            <div className="relative flex">
               <input 
                 type="text" 
                 placeholder="Search here..." 
-                className="w-full rounded-lg  border-2 border-blue-600 pl-4 pr-10 py-2 
+                className="w-full rounded-lg border-2 border-blue-600 pl-4 pr-10 py-2 
                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
-                          group-hover:shadow-md transition-all duration-300"
+                          hover:shadow-md transition-all duration-300"
               />
 
               <button className="absolute right-0 top-1/2 transform -translate-y-1/2 rounded-r-md bg-indigo-600 text-white px-5 py-2 
@@ -253,9 +254,8 @@ const CombinedNavbar = () => {
         )}
       </nav>
 
-
-       {/* Top Navbar */}
-       <div className="bg-white text-black border-b border-gray-300 ">
+      {/* Secondary Navbar */}
+      <div className="bg-white text-black border-b border-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
             {/* Left section - Categories menu */}
@@ -268,7 +268,7 @@ const CombinedNavbar = () => {
                     setIsTopMenuOpen(!isTopMenuOpen);
                     setActiveDropdown(isTopMenuOpen ? null : 'categories');
                   }}
-                  className="flex items-center space-x-1 px-3 py-2 rounded-md transition-colors"
+                  className="flex items-center space-x-1 px-3 py-2 rounded-md transition-colors hover:bg-gray-100"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -300,71 +300,66 @@ const CombinedNavbar = () => {
                 )}
               </div>
               
-              {/* Navigation items */}
+              {/* Navigation items - Desktop */}
               <div className="hidden md:flex md:ml-6 md:space-x-6">
-                <a href="#" className="px-3 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors">
+                <a href="#" className="px-3 py-2 rounded-md font-medium hover:text-gray-400 transition-colors">
                   Hot Offers
                 </a>
-                <a href="#" className="px-3 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors">
+                <a href="#" className="px-3 py-2 rounded-md font-medium hover:text-gray-400 transition-colors">
                   Gift Boxes
                 </a>
-                <a href="#" className="px-3 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors">
-                Projects
+                <a href="#" className="px-3 py-2 rounded-md font-medium hover:text-gray-400 transition-colors">
+                  Projects
                 </a>
-                <a href="#" className="px-3 py-2 rounded-md font-medium hover:bg-gray-700 transition-colors">
-                Menu item
+                <a href="#" className="px-3 py-2 rounded-md font-medium hover:text-gray-400 transition-colors">
+                  Menu item
                 </a>
 
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleDropdown('help');
-                  }}
-                  className="flex items-center text-sm font-medium hover:text-gray-300 focus:outline-none"
-                >
-                  <span>Help</span>
-                  <svg 
-                    className={`ml-1 h-4 w-4  transform transition-transform ${isHelpOpen ? 'rotate-180' : ''}`} 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
+                {/* Help dropdown - Desktop */}
+                <div className="relative top-2.5">
+                  <button 
+                    onClick={(e) => toggleDropdown('help', e)}
+                    className="flex items-center text-sm font-medium hover:text-gray-400 
+                     focus:outline-none"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                
-                {isHelpOpen && (
-                  <div className="absolute right-40  mt-9 w-48 rounded-md shadow-lg bg-white text-gray-800 z-50">
-                    <div className="py-1">
-                      {helpOptions.map((option, index) => (
-                        <a 
-                          key={index} 
-                          href={option.link} 
-                          className="block px-4 py-2 text-sm hover:bg-gray-100"
-                        >
-                          {option.name}
-                        </a>
-                      ))}
+                    <span>Help</span>
+                    <svg 
+                      className={`ml-1 h-4 w-4  transform transition-transform ${isHelpOpen ? 'rotate-180' : ''}`} 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {isHelpOpen && (
+                    <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white text-gray-800 z-50">
+                      <div className="py-1">
+                        {helpOptions.map((option, index) => (
+                          <a 
+                            key={index} 
+                            href={option.link} 
+                            className="block px-4 py-2 text-sm hover:bg-gray-100"
+                          >
+                            {option.name}
+                          </a>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
                 </div>
+              </div>
+            </div>
             
             {/* Right section - Dropdowns */}
             <div className="flex items-center space-x-3">
-              {/* Help dropdown */}
-              
-              
               {/* Language dropdown */}
               <div className="relative">
                 <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleDropdown('lang');
-                  }}
-                  className="flex items-center text-sm font-medium hover:text-gray-300 focus:outline-none"
+                  onClick={(e) => toggleDropdown('lang', e)}
+                  className="flex items-center text-sm font-medium hover:text-gray-400 focus:outline-none"
                 >
                   <span>English</span>
                   <svg 
@@ -399,11 +394,8 @@ const CombinedNavbar = () => {
               {/* Ship To dropdown */}
               <div className="relative">
                 <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleDropdown('ship');
-                  }}
-                  className="flex items-center text-sm font-medium hover:text-gray-300 focus:outline-none"
+                  onClick={(e) => toggleDropdown('ship', e)}
+                  className="flex items-center text-sm font-medium hover:text-gray-400 focus:outline-none"
                 >
                   <span className="mr-1">🇺🇸</span>
                   <span>Ship To</span>
@@ -440,24 +432,29 @@ const CombinedNavbar = () => {
           </div>
         </div>
         
-        {/* Mobile menu for top navbar (small screens) */}
+        {/* Mobile menu for secondary navbar (small screens) */}
         {(isTopMenuOpen && window.innerWidth < 768) && (
-          <div className="md:hidden bg-gray-700">
+          <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">
-                <span className="text-red-400 mr-1">🔥</span> Hot Offers
+              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100">
+                Hot Offers
               </a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">
-                <span className="text-yellow-400 mr-1">🎁</span> Gift Boxes
+              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100">
+                Gift Boxes
               </a>
-              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-600">
-                <span className="text-green-400 mr-1">📦</span> Projects
+              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100">
+                Projects
+              </a>
+              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100">
+                Menu item
+              </a>
+              <a href="#" className="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-100">
+                Help
               </a>
             </div>
           </div>
         )}
       </div>
-
     </header>
   );
 };
