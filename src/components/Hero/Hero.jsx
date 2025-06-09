@@ -7,30 +7,28 @@ const Hero = () => {
       <div className="w-full flex flex-col lg:flex-row">
         {/* Categories Section */}
         <div className="w-full lg:w-1/5 bg-white p-6 border-b lg:border-b-0 lg:border-r border-gray-200">
-          <h3 className="font-bold text-lg mb-4 text-gray-800">Popular Categories</h3>
+     
           <ul className="space-y-3">
             {[
-              "Electronics",
-              "Apparel & Fashion",
-              "Home & Garden",
-              "Beauty & Personal Care",
+              "Automobiles",
+              "Cloths and Wear",
+              "Home interiors",
+              "Computer and tech",
+              "Tools, equipments",
               "Sports & Outdoors",
-              "Toys & Games",
-              "Machinery & Tools",
-              "Food & Beverage",
-              "Health & Medical",
-              "Packaging & Printing"
+              "Animal and pets",
+              "Machinery tools"
             ].map((category) => (
               <li
                 key={category}
-                className="text-gray-600 hover:text-orange-500 cursor-pointer transition-colors"
+                className="text-gray-600 hover:text-blue-500 cursor-pointer transition-colors"
               >
                 {category}
               </li>
             ))}
             <li className="mt-4">
-              <button className="text-orange-500 font-semibold hover:underline">
-                View All Categories →
+              <button className="text-blue-500 font-semibold hover:underline">
+                More Category
               </button>
             </li>
           </ul>
@@ -39,7 +37,7 @@ const Hero = () => {
         {/* Main Hero Section */}
         <div className="flex flex-col md:flex-row flex-1">
           {/* Image and Text Overlay */}
-          <div className="relative w-full md:w-3/4 h-[300px] md:h-auto">
+          <div className="relative w-full md:w-3/4 h-[360px] ">
             <div
               className="absolute inset-0 bg-cover bg-center"
               style={{
@@ -62,35 +60,29 @@ const Hero = () => {
 
           {/* CTA Section */}
           <div className="w-full md:w-1/4 bg-gradient-to-br from-white to-gray-100 p-6 flex flex-col justify-center">
-            <div className="flex items-center mb-4">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-800">
-                Hi, User! Let's get started
-              </h2>
-              <div className="ml-2 bg-blue-500 rounded-full p-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
+            <div className='bg-blue-100 rounded-md px-2 py-2 mb-2'>
+            <div className="flex items-center space-x-3 mb-4   ">
+
+            <div className=" bg-blue-200 rounded-full text-white ">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
               </div>
+
+              <h2 className="font-medium text-gray-800">
+                Hi, user let's get started
+              </h2>
+             
             </div>
 
-            <div className="flex flex-col space-y-3 mb-6">
-              <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 w-full">
-                Join Now
+            <div className="flex flex-col space-y-2 mb-6">
+              <button className="bg-blue-700 hover:bg-orange-600 text-white font-semibold py-1 px-4 rounded-lg transition duration-300 w-full">
+                Join now
               </button>
-              <button className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-300 w-full">
-                Login
+              <button className="border-2 border-gray-300 bg-white hover:border-gray-400 text-blue-700 font-semibold py-1 px-4 rounded-lg transition duration-300 w-full">
+                Log in
               </button>
+            </div>
             </div>
 
             {/* Promotions */}
@@ -98,7 +90,7 @@ const Hero = () => {
               <div className="bg-orange-500 text-white p-3 rounded-lg shadow-md text-sm">
                 Get US $10 off with new supplier
               </div>
-              <div className="bg-blue-600 text-white p-3 rounded-lg shadow-md text-sm">
+              <div className="bg-sky-500 text-white p-3 rounded-lg shadow-md text-sm">
                 Send quotes with Supplier preferences
               </div>
             </div>
