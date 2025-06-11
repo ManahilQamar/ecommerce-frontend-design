@@ -1,12 +1,13 @@
 import React from 'react';
 
+
 const Deals = () => {
   const products = [
-    { id: 1, name: 'Smart watches', image: '/images/phone.jpg', discount: 30 },
-    { id: 2, name: 'Laptop', image: '/images/Laptop.jpg', discount: 40 },
-    { id: 3, name: 'GoPro cameras', image: '/images/cameras.jpg', discount: 25 },
-    { id: 4, name: 'Headphones', image: '/images/Headphones.jpg', discount: 35 },
-    { id: 5, name: 'Canon cameras', image: '/images/watch.jpg', discount: 35 }
+    { id: 1, name: 'Smart watches', image: 'public/images/watch.png', discount: 30 },
+    { id: 2, name: 'Laptop', image: 'public/images/laptop.png', discount: 40 },
+    { id: 3, name: 'GoPro cameras', image: '/images/camera.png', discount: 25 },
+    { id: 4, name: 'Headphones', image: '/images/headphone.png', discount: 35 },
+    { id: 5, name: 'Canon cameras', image: '/images/Canon.png', discount: 35 }
   ];
 
   return (

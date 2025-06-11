@@ -72,21 +72,25 @@ const Hero = () => {
         <div className="flex  p-2 flex-col bg-white lg:flex-row flex-1">
           {/* Image and Text Overlay */}
           <div className="relative w-full lg:w-3/4 h-[250px]   sm:h-[300px] md:h-[360px]">
-            <div
-              className="absolute top-2 inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')",
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center p-4 md:p-8">
-                <div className="text-center max-w-2xl">
-                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-2 md:mb-4">
-                    Connecting Global Suppliers
+          <div
+  className="absolute top-2 inset-0 bg-cover bg-center"
+  style={{
+    backgroundImage: "url('/images/heroBg.png')",
+  }}
+>
+
+              <div className="absolute inset-0  bg-opacity-40 flex p-4 md:p-10">
+                <div className=" max-w-2xl">
+                  <h1 className=" text-sm sm:text-base md:text-lg lg:text-xl text-black opacity-90">
+                    Lastest trending
                   </h1>
-                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white opacity-90">
-                    Find the best suppliers for your business needs worldwide
+                  <p className="
+                  text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-black mb-2 md:mb-4
+                  
+                 ">
+                    Electronic items
                   </p>
+                  <button className='bg-white py-1 px-3 rounded-md'>Learn more</button>
                 </div>
               </div>
             </div>
