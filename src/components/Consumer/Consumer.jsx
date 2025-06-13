@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Outdoor = () => {
+const Consumer = () => {
   const products = [
     { id: 1, name: 'Smart Watch', image: '/images/watch.png',  USDnumber: 19 },
     { id: 2, name: 'Laptop', image: '/images/laptop.png',  USDnumber: 19 },
@@ -22,7 +22,7 @@ const Outdoor = () => {
           style={{ backgroundImage: "url('/images/home.png')" }}
         >
           <h2 className="text-lg font-semibold drop-shadow">
-            Home and <br /> Outdoor
+            Home and <br /> Consumer
           </h2>
           <button className="py-2 px-4 bg-white text-black text-sm font-semibold  hover:bg-gray-200 w-28">
             Source now
@@ -57,4 +57,4 @@ const Outdoor = () => {
   );
 };
 
-export default Outdoor;
+export default Consumer;
