@@ -3,9 +3,10 @@ import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import Deals from './components/Deals/Deals';
 import Outdoor from './components/Outdoor/Outdoor';
-import Consumer from './components/consumer/consumer';
+import ConsumerSection from './components/ConsumerSection/ConsumerSection';
 import Suppliers from './components/Suppliers/Suppliers';
 import RecommendedItems from './components/RecommendedItems/RecommendedItems';
+import ExtraServices from './components/ExtraServices/ExtraServices';
 
 const App = () => {
   return (
@@ -14,9 +15,10 @@ const App = () => {
       <Hero />
       <Deals />
       <Outdoor />
-      <Consumer />
+      <ConsumerSection />
       <Suppliers />
       <RecommendedItems />
+      <ExtraServices />
     </div>
   )
 }
