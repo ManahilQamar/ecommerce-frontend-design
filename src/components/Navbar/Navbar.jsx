@@ -131,13 +131,14 @@ const CombinedNavbar = () => {
 
   // Shipping options
   const shippingOptions = [
-    { country: 'United States', flag: '🇺🇸' },
-    { country: 'Canada', flag: '🇨🇦' },
-    { country: 'United Kingdom', flag: '🇬🇧' },
-    { country: 'Australia', flag: '🇦🇺' },
-    { country: 'Germany', flag: '🇩🇪' },
-    { country: 'Japan', flag: '🇯🇵' },
+    { country: 'United States', flag: '/images/images/flags/US@2x.png' },
+    { country: 'Canada', flag: '/images/images/flags/CN@2x.png' },
+    { country: 'United Kingdom', flag: '/images/images/flags/GB@2x.png' },
+    { country: 'Australia', flag: '/images/images/flags/AU@2x.png' },
+    { country: 'Germany', flag: '/images/images/flags/DE@2x.png' },
+    { country: 'Japan', flag: '/images/images/flags/JP@2x.png' },
   ];
+  
 
   return (
     <header>
@@ -204,10 +205,10 @@ const CombinedNavbar = () => {
             <div className="flex items-center space-x-4">
               {navItems.map((item, index) => (
                 <div key={index} className="flex flex-col items-center group">
-                  <button className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+                  <button className=" rounded-full hover:bg-gray-100 transition-colors">
                     {item.icon}
                   </button>
-                  <span className="text-xs mt-1 text-gray-600 group-hover:text-indigo-600 transition-colors">
+                  <span className="text-xs  text-gray-600 group-hover:text-indigo-600 transition-colors">
                     {item.name}
                   </span>
                 </div>
@@ -397,7 +398,10 @@ const CombinedNavbar = () => {
                   onClick={(e) => toggleDropdown('ship', e)}
                   className="flex items-center text-sm font-medium hover:text-gray-400 focus:outline-none"
                 >
-                  <span className="mr-1">🇺🇸</span>
+                <span className="mr-1">
+  <img src="images/images/flags/US@2x.png" alt="US flag" className="w-5 h-4 object-cover inline-block" />
+</span>
+
                   <span>Ship To</span>
                   <svg 
                     className={`ml-1 h-4 w-4 transform transition-transform ${isShipOpen ? 'rotate-180' : ''}`} 
@@ -411,22 +415,27 @@ const CombinedNavbar = () => {
                 </button>
                 
                 {isShipOpen && (
-                  <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white text-gray-800 z-50">
-                    <div className="py-1">
-                      <div className="px-4 py-2 text-xs text-gray-500">Select your country</div>
-                      {shippingOptions.map((country, index) => (
-                        <a 
-                          key={index} 
-                          href="#" 
-                          className="flex items-center px-4 py-2 text-sm hover:bg-gray-100"
-                        >
-                          <span className="mr-2 text-xl">{country.flag}</span>
-                          <span>{country.country}</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
+  <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white text-gray-800 z-50">
+    <div className="py-1">
+      <div className="px-4 py-2 text-xs text-gray-500">Select your country</div>
+      {shippingOptions.map((country, index) => (
+        <a 
+          key={index} 
+          href="#" 
+          className="flex items-center px-4 py-2 text-sm hover:bg-gray-100"
+        >
+          <img 
+            src={country.flag} 
+            alt={country.country} 
+            className="w-5 h-4 object-cover mr-2 rounded-sm"
+          />
+          <span>{country.country}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
               </div>
             </div>
           </div>

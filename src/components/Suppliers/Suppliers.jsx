@@ -2,62 +2,90 @@ import React from 'react';
 
 const Suppliers = () => {
   return (
-    <div className='p-4 '>
-
-    <div
-      className="relative w-full h-[450px] bg-cover bg-center  flex items-center justify-between px-11 text-white"
-      style={{ backgroundImage: "url('/images/suppliers.png')" }} 
-    >
-      {/* Blue Light on Right */}
-      <div className="absolute left-0 top-0 w-full h-full bg-gradient-to-r from-blue-700/90 to-transparent pointer"></div>
-
-      {/* Left Text */}
-      <h1 className="z-10 text-3xl md:text-4xl font-bold max-w-md">
-        An easy way to send requests to all suppliers
-      <p className="z-10 top-4 relative text-sm font-extralight   max-w-md">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, voluptate suscipit. adipisicing elit. Autem, voluptate suscipit.</p>
-      </h1>
-
-      {/* Right Form */}
-      <div className="z-10 bg-white p-8 rounded-md max-w-md w-full text-black shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Send quote to suppliers</h2>
-
-        <div className="mb-3">
+    <div className="w-full max-w-[1920px] mx-auto px-4 py-8 md:px-8">
+      {/* Hero Section */}
+      <div className="relative w-full min-h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between">
+        {/* Background Image with Gradient Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/suppliers.png')" }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-800/85 to-transparent md:from-blue-800/90 md:via-blue-800/60 md:to-transparent"></div>
+        
+        {/* Content Container */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 p-6 sm:p-6 md:p-8 lg:p-10">
+          {/* Left Text Content */}
+          <div className="w-full md:w-1/2 lg:w-2/5 text-white flex flex-col gap-4 md:gap-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight">
+              An easy way to send requests to all suppliers
+            </h1>
+            <p className="text-base sm:text-lg opacity-90 max-w-xl">
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Autem, voluptate suscipit. 
+              Adipisicing elit. Autem, voluptate suscipit. Lorem ipsum dolor sit amet consectetur.
+            </p>
+          </div>
           
-          <input
-            type="text"
-            className="w-full p-2 rounded bg-white/20 border border-black/30 text-black placeholder-black  focus:outline-none"
-            placeholder="What item you need?"
-          />
+          {/* Right Form */}
+          <div className="w-full md:w-1/2 lg:w-1/2 bg-white p-4 sm:p-8 rounded-xl shadow-xl text-gray-800">
+            <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">Send quote to suppliers</h2>
+            
+            <form className="space-y-4 md:space-y-5">
+              {/* Item Input */}
+              <div>
+                <input
+                  type="text"
+                  className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                  placeholder="What item you need?"
+                  aria-label="Item needed"
+                />
+              </div>
+              
+              {/* Details Textarea */}
+              <div>
+                <textarea
+                  className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition min-h-[100px]"
+                  placeholder="Type more details..."
+                  aria-label="Item details"
+                ></textarea>
+              </div>
+              
+              {/* Quantity and Unit */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <input
+                    type="number"
+                    className="w-full p-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                    placeholder="Quantity"
+                    aria-label="Item quantity"
+                  />
+                </div>
+                
+                <div>
+                  <select 
+                    className=" p-3 rounded-lg bg-gray-50 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                    aria-label="Measurement unit"
+                  >
+                    <option>Pcs</option>
+                    <option>Kg</option>
+                    <option>Box</option>
+                    <option>Liter</option>
+                    <option>Meter</option>
+                  </select>
+                </div>
+              </div>
+              
+              {/* Submit Button */}
+              <button 
+                className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                aria-label="Send inquiry"
+              >
+                Send Inquiry
+              </button>
+            </form>
+          </div>
         </div>
-
-        <div className="mb-3">
-          <textarea
-            className="w-full p-2 rounded bg-white/20 border border-black/30 text-black placeholder-black placeholder-opacity-40 focus:outline-none"
-            rows="3"
-            placeholder="Type more details..."
-          ></textarea>
-        </div>
-
-        <div className="mb-4 flex gap-2">
-          <input
-            type="number"
-            className=" p-2 rounded bg-white/20 border border-black/30 text-white placeholder-black placeholder-opacity-70 focus:outline-none"
-            placeholder="Quantity"
-          />
-          <select className="p-2 w-28 rounded bg-white/20 border border-black/30 text-black focus:outline-none">
-            <option>Pcs</option>
-            <option>Kg</option>
-            <option>Box</option>
-          </select>
-        </div>
-
-        <button className="w-28 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded font-semibold">
-          Send Inquiry
-        </button>
       </div>
     </div>
-    </div>
-
   );
 };
 
