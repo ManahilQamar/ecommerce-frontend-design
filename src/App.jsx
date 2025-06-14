@@ -10,6 +10,7 @@ import ExtraServices from './components/ExtraServices/ExtraServices';
 import Region from './components/Region/Region';
 import Subscribe from './components/Subscribe/Subscribe';
 import Footer from './components/Footer/Footer';
+import LastLine from './components/LastLine/LastLine';
 
 const App = () => {
   return (
@@ -25,8 +26,9 @@ const App = () => {
       <Region />
       <Subscribe />
       <Footer />
+      <LastLine />
     </div>
   )
 }
 
-export default App
+export default App;
