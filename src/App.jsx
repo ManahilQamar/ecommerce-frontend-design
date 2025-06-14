@@ -9,6 +9,7 @@ import RecommendedItems from './components/RecommendedItems/RecommendedItems';
 import ExtraServices from './components/ExtraServices/ExtraServices';
 import Region from './components/Region/Region';
 import Subscribe from './components/Subscribe/Subscribe';
+import Footer from './components/Footer/Footer';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
       <ExtraServices />
       <Region />
       <Subscribe />
+      <Footer />
     </div>
   )
 }
