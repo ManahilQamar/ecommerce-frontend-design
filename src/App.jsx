@@ -7,6 +7,8 @@ import ConsumerSection from './components/ConsumerSection/ConsumerSection';
 import Suppliers from './components/Suppliers/Suppliers';
 import RecommendedItems from './components/RecommendedItems/RecommendedItems';
 import ExtraServices from './components/ExtraServices/ExtraServices';
+import Region from './components/Region/Region';
+import Subscribe from './components/Subscribe/Subscribe';
 
 const App = () => {
   return (
@@ -19,6 +21,8 @@ const App = () => {
       <Suppliers />
       <RecommendedItems />
       <ExtraServices />
+      <Region />
+      <Subscribe />
     </div>
   )
 }

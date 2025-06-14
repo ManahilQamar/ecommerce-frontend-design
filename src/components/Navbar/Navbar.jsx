@@ -101,14 +101,14 @@ const CombinedNavbar = () => {
 
   // Categories for the hamburger menu
   const categories = [
-    { name: 'Electronics', icon: '📱' },
-    { name: 'Fashion', icon: '👕' },
-    { name: 'Home & Kitchen', icon: '🏠' },
-    { name: 'Beauty', icon: '💄' },
-    { name: 'Sports', icon: '⚽' },
-    { name: 'Books', icon: '📚' },
-    { name: 'Toys', icon: '🧸' },
-    { name: 'Automotive', icon: '🚗' },
+    { name: 'Electronics' },
+    { name: 'Fashion' },
+    { name: 'Home & Kitchen' },
+    { name: 'Beauty' },
+    { name: 'Sports' },
+    { name: 'Books' },
+    { name: 'Toys' },
+    { name: 'Automotive' },
   ];
 
   // Help options
