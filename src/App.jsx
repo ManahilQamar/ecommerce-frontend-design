@@ -11,6 +11,7 @@ import Region from './components/Region/Region';
 import Subscribe from './components/Subscribe/Subscribe';
 import Footer from './components/Footer/Footer';
 import LastLine from './components/LastLine/LastLine';
+import ProductCart from './components/ProductCart/ProductCart';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
       <Subscribe />
       <Footer />
       <LastLine />
+      <ProductCart />
     </div>
   )
 }
