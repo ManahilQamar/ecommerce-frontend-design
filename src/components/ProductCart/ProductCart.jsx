@@ -156,7 +156,7 @@ const ProductCart = ({ cart, setCart }) => {
         'https://oneclickshopping.pk/wp-content/uploads/2023/03/61iN5byJrXL.jpg',
         'https://m.media-amazon.com/images/I/41y7+u6kw1L.jpg',
         'https://i.ebayimg.com/images/g/9nYAAOSwARtkc~3J/s-l1200.jpg',
-        'https://m.media-amazon.com/images/I/61xgRr4vueL._UF1000,1000_QL80_.jpg'
+        'https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZmFzdCUyMGNoYXJnZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60'
       ]
     },
     {
@@ -190,12 +190,12 @@ const ProductCart = ({ cart, setCart }) => {
         verified: true,
         shipping: 'Worldwide Shipping',
       },
-      image: 'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251',
+      image: 'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2NyZWVuJTIwcHJvdGVjdG9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
       images: [
-        'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251',
-        'https://mistore.africa/wp-content/uploads/2024/01/VXN4305GL_wr_01.jpg',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiwlPzjhoUUHd7SAW01FlKwdtOZCGD5UFQl2IWWWrernFjIG9l8K67qox6ma_A-WWOMw&usqp=CAU',
-        'https://mistore.africa/wp-content/uploads/2024/01/VXN4305GL_wr_01.jpg'
+        'https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2NyZWVuJTIwcHJvdGVjdG9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2NyZWVuJTIwcHJvdGVjdG9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1605189859547-3eb8a1aeb4d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c2NyZWVuJTIwcHJvdGVjdG9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1605189859548-5541d1c1c3d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c2NyZWVuJTIwcHJvdGVjdG9yfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60'
       ]
     },
     {
@@ -229,12 +229,12 @@ const ProductCart = ({ cart, setCart }) => {
         verified: true,
         shipping: 'Worldwide Shipping',
       },
-      image: 'https://images.unsplash.com/photo-1597764690523-15a1a5c60c1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+      image: 'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251',
       images: [
-        'https://images.unsplash.com/photo-1597764690523-15a1a5c60c1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-        'https://images.unsplash.com/photo-1606220588911-4561c3d0e2c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-        'https://images.unsplash.com/photo-1630074235121-0b1a9f4d2d8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-        'https://images.unsplash.com/photo-1606220588911-4561c3d0e2c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60'
+        'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251',
+        'https://mistore.africa/wp-content/uploads/2024/01/VXN4305GL_wr_01.jpg',
+        'https://www.xiaomistore.pk/xiaomi_images/product/images/new_goods/gallery_img/834_656ef3fc500d3_1701770236.webp',
+        'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251'
       ]
     },
     {
