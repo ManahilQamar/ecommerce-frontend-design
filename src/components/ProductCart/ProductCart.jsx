@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
 
-const ProductCart = () => {
+const ProductCart = ({ cart, setCart }) => {
   // State for dropdowns and filters
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const [filters, setFilters] = useState({
-    category: [], // Will contain only one category at a time
+    category: [],
     brand: [],
     feature: [],
     minPrice: 0,
@@ -12,10 +14,24 @@ const ProductCart = () => {
     condition: [],
     rating: 0
   });
+
+  const handleAddToCart = (product) => {
+    setCart((prevCart) => {
+      const existing = prevCart.find((item) => item.id === product.id);
+      if (existing) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity: 1 }];
+      }
+    });
+  };
   
   // View mode state
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
-  const [selectedProduct, setSelectedProduct] = useState(null); // Selected product for detail view
+  const [viewMode, setViewMode] = useState('grid');
 
   // Mock data
   const categories = ['All Accessories', 'Cases & Covers', 'Chargers', 'Headphones', 'Screen Protectors', 'Power Banks'];
@@ -24,7 +40,7 @@ const ProductCart = () => {
   const conditions = ['New', 'Refurbished', 'Open Box'];
   const ratings = [4, 3, 2, 1];
 
-  // Mock products data
+  // Mock products data with actual images
   const products = [
     {
       id: 1,
@@ -56,7 +72,14 @@ const ProductCart = () => {
         location: 'Germany, Berlin',
         verified: true,
         shipping: 'Worldwide Shipping',
-      }
+      },
+      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+      images: [
+        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1546435770-a3e426bf472b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'
+      ]
     },
     {
       id: 2,
@@ -88,7 +111,14 @@ const ProductCart = () => {
         location: 'USA, California',
         verified: true,
         shipping: 'Worldwide Shipping',
-      }
+      },
+      image: 'https://cdn.thewirecutter.com/wp-content/media/2024/10/iphone-case-2048px-3456.jpg?auto=webp&quality=75&width=1024',
+      images: [
+        'https://cdn.thewirecutter.com/wp-content/media/2024/10/iphone-case-2048px-3456.jpg?auto=webp&quality=75&width=1024',
+        'https://cdn11.bigcommerce.com/s-2gwuho/images/stencil/1280x1280/products/207263/2269607/EDA006513714A__22538.1726558794.jpg?c=2',
+        'https://i5.walmartimages.com/seo/TECH-CIRCLE-Wallet-Phone-Case-iPhone-15-2023-Protective-Leather-Shell-Durable-Soft-Silicone-Back-Cover-Magnetic-Folio-Card-Holder-Pocket-Stand-Featur_0e593e37-6941-4649-a8b5-6e8097e60fc5.ab5dc5cce1b6eaba8277a8d6b86f1cb8.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF',
+        'https://i.ebayimg.com/thumbs/images/g/DhcAAOSwvVFjthid/s-l1200.jpg'
+      ]
     },
     {
       id: 3,
@@ -120,7 +150,14 @@ const ProductCart = () => {
         location: 'China, Shenzhen',
         verified: true,
         shipping: 'Worldwide Shipping',
-      }
+      },
+      image: 'https://oneclickshopping.pk/wp-content/uploads/2023/03/61iN5byJrXL.jpg',
+      images: [
+        'https://oneclickshopping.pk/wp-content/uploads/2023/03/61iN5byJrXL.jpg',
+        'https://m.media-amazon.com/images/I/41y7+u6kw1L.jpg',
+        'https://i.ebayimg.com/images/g/9nYAAOSwARtkc~3J/s-l1200.jpg',
+        'https://m.media-amazon.com/images/I/61xgRr4vueL._UF1000,1000_QL80_.jpg'
+      ]
     },
     {
       id: 4,
@@ -152,7 +189,14 @@ const ProductCart = () => {
         location: 'Japan, Tokyo',
         verified: true,
         shipping: 'Worldwide Shipping',
-      }
+      },
+      image: 'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251',
+      images: [
+        'https://shahalami.pk/cdn/shop/products/10000mAh_Redmi_Power_Bank_black_510x@2x.progressive.jpg?v=1632130251',
+        'https://mistore.africa/wp-content/uploads/2024/01/VXN4305GL_wr_01.jpg',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyiwlPzjhoUUHd7SAW01FlKwdtOZCGD5UFQl2IWWWrernFjIG9l8K67qox6ma_A-WWOMw&usqp=CAU',
+        'https://mistore.africa/wp-content/uploads/2024/01/VXN4305GL_wr_01.jpg'
+      ]
     },
     {
       id: 5,
@@ -184,7 +228,14 @@ const ProductCart = () => {
         location: 'South Korea, Seoul',
         verified: true,
         shipping: 'Worldwide Shipping',
-      }
+      },
+      image: 'https://images.unsplash.com/photo-1597764690523-15a1a5c60c1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+      images: [
+        'https://images.unsplash.com/photo-1597764690523-15a1a5c60c1a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1606220588911-4561c3d0e2c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1630074235121-0b1a9f4d2d8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1606220588911-4561c3d0e2c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cG93ZXIlMjBiYW5rfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60'
+      ]
     },
     {
       id: 6,
@@ -216,7 +267,14 @@ const ProductCart = () => {
         location: 'USA, New York',
         verified: true,
         shipping: 'Worldwide Shipping',
-      }
+      },
+      image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+      images: [
+        'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1613047508790-78223d0b7bd2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
+        'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'
+      ]
     }
   ];
 
@@ -227,7 +285,6 @@ const ProductCart = () => {
   const handleFilterChange = (filter, value) => {
     setFilters(prev => {
       if (filter === 'category') {
-        // Single selection: replace the entire array with the new selection
         return { ...prev, [filter]: [value] };
       }
       else if (['brand', 'feature', 'condition'].includes(filter)) {
@@ -306,10 +363,19 @@ const ProductCart = () => {
           <div className="flex flex-col md:flex-row">
             {/* Product Images */}
             <div className="md:w-1/2 p-6">
-              <div className="bg-gray-200 border-2 border-dashed w-full h-96 rounded-lg mb-4"></div>
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className="w-full h-96 object-contain rounded-lg mb-4"
+              />
               <div className="flex gap-2">
-                {[1, 2, 3, 4].map((img) => (
-                  <div key={img} className="bg-gray-200 border-2 border-dashed w-24 h-24 rounded"></div>
+                {product.images.map((img, index) => (
+                  <img 
+                    key={index} 
+                    src={img} 
+                    alt={`${product.name} thumbnail ${index+1}`}
+                    className="w-24 h-24 rounded object-cover border border-gray-200"
+                  />
                 ))}
               </div>
             </div>
@@ -487,7 +553,11 @@ const ProductCart = () => {
                 className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
                 onClick={() => setSelectedProduct(product)}
               >
-                <div className="bg-gray-200 border-2 border-dashed w-full h-40"></div>
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-full h-40 object-cover"
+                />
                 <div className="p-4">
                   <h3 className="font-bold mb-1">{product.name}</h3>
                   <p className="text-gray-800 font-bold">${product.price.toFixed(2)}</p>
@@ -507,7 +577,11 @@ const ProductCart = () => {
                 className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
                 onClick={() => setSelectedProduct(product)}
               >
-                <div className="bg-gray-200 border-2 border-dashed w-full h-40"></div>
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className="w-full h-40 object-cover"
+                />
                 <div className="p-4">
                   <h3 className="font-bold mb-1">{product.name}</h3>
                   <p className="text-gray-800 font-bold">${product.price.toFixed(2)}</p>
@@ -758,7 +832,7 @@ const ProductCart = () => {
         <div className="w-full md:w-3/4">
           {/* CATEGORIES FILTER BAR */}
           <div className="rounded-lg shadow-md bg-white p-4 mb-3">
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center justify-between">
               {filters.category.length === 0 ? (
                 <span className="text-blue-300 text-sm">No category selected</span>
               ) : (
@@ -773,7 +847,7 @@ const ProductCart = () => {
                   </div>
                 ))
               )}
-              <div className='flex relative left-[215px]'>
+              <div className='flex '>
                 <div className="flex items-center mr-2">
                   <input
                     type="checkbox"
@@ -953,12 +1027,12 @@ const ProductCart = () => {
                   viewMode === 'list' ? 'flex' : 'block'
                 }`}
               >
-                <div 
-                  className={`bg-gray-200 border-2 border-dashed ${
-                    viewMode === 'list' 
-                      ? 'w-48 h-48 flex-shrink-0' 
-                      : 'w-full h-48'
-                  }`} 
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  className={`${viewMode === 'list' 
+                    ? 'w-48 h-48 flex-shrink-0 object-cover' 
+                    : 'w-full h-48 object-cover'}`} 
                 />
                 
                 <div className={`p-4 ${viewMode === 'list' ? 'flex-grow' : ''}`}>
@@ -991,12 +1065,20 @@ const ProductCart = () => {
                       {product.description.substring(0, 100)}...
                     </p>
                   )}
-                  <div className="mt-3 flex">
+                  <div className="mt-3 justify-between flex">
                     <button 
                       onClick={() => setSelectedProduct(product)}
                       className="text-blue-600 hover:text-blue-400 transition"
                     >
                       View Details
+                    </button>
+                    <button 
+                      onClick={() => handleAddToCart(product)}
+                      className="text-blue-600 hover:text-blue-400 transition"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
                     </button>
                   </div>
                 </div>
