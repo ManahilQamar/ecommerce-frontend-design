@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   FaFacebookF,
   FaTwitter,
@@ -9,16 +9,17 @@ import {
 } from 'react-icons/fa';
 
 const Footer = () => {
- 
   return (
     <footer className="bg-white text-black py-10 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 p-2 gap-8">
-        {/* Company Info */}
-        <div className="sm:col-span-2 md:col-span-3 lg:col-span-2">
-          <h2 className="text-xl font-bold mb-4">Shopenam</h2>
-          <p className="text-sm text-gray-700 mb-6">
-            Your trusted platform for suppliers across the globe. Delivering quality and value.
-          </p>
+      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6 p-2">
+        {/* Company Info - Full width on mobile, spans 2 columns on larger screens */}
+        <div className="col-span-2 md:col-span-4 lg:col-span-2">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold mb-4">Shopenam</h2>
+            <p className="text-sm text-gray-700 mb-6">
+              Your trusted platform for suppliers across the globe. Delivering quality and value.
+            </p>
+          </div>
           <div>
             <h3 className="text-lg font-semibold mb-3">Follow Us</h3>
             <div className="flex gap-4 text-gray-700">
@@ -38,8 +39,8 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* About */}
-        <div>
+        {/* Link Sections - 2 columns on mobile, 1 column on larger screens */}
+        <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-3">About</h3>
           <ul className="space-y-2 text-sm text-gray-600">
             <li><a href="#" className="hover:text-gray-400 transition-colors">About Us</a></li>
@@ -49,8 +50,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Partnership */}
-        <div>
+        <div className="col-span-1">
           <h3 className="text-lg font-semibold mb-3">Partnership</h3>
           <ul className="space-y-2 text-sm text-gray-600">
             <li><a href="#" className="hover:text-gray-400 transition-colors">Become a Supplier</a></li>
@@ -60,8 +60,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Support */}
-        <div>
+        <div className="col-span-1 mt-6 md:mt-0">
           <h3 className="text-lg font-semibold mb-3">Support</h3>
           <ul className="space-y-2 text-sm text-gray-600">
             <li><a href="#" className="hover:text-gray-400 transition-colors">Help Center</a></li>
@@ -71,8 +70,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Legal */}
-        <div>
+        <div className="col-span-1 mt-6 md:mt-0">
           <h3 className="text-lg font-semibold mb-3">Legal</h3>
           <ul className="space-y-2 text-sm text-gray-600">
             <li><a href="#" className="hover:text-gray-400 transition-colors">Privacy Policy</a></li>
@@ -82,13 +80,13 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Get App */}
-        <div>
-          <h3 className="text-center text-lg font-bold mb-3">Get App</h3>
-          <div className="sm:flex-row">
+        {/* Get App - Full width on mobile, spans 2 columns on medium+, 1 column on large+ */}
+        <div className="col-span-2 md:col-span-4 lg:col-span-2 mt-6 md:mt-0">
+          <h3 className="text-lg font-bold mb-3 text-center md:text-left">Get App</h3>
+          <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 justify-center md:justify-start">
             <a
               href="#"
-              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors sm:w-auto min-w-[180px] mb-2"
+              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
             >
               <FaApple className="text-2xl" />
               <div className="text-left leading-tight">
@@ -98,7 +96,7 @@ const Footer = () => {
             </a>
             <a
               href="#"
-              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors sm:w-auto min-w-[180px]"
+              className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
             >
               <FaGooglePlay className="text-xl" />
               <div className="text-left leading-tight">
@@ -109,7 +107,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
     </footer>
   );
 };

@@ -2,65 +2,47 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
-  const navigate = useNavigate(); // ✅ Correct: inside the component
+  const navigate = useNavigate();
+  const categories = [
+    "Automobiles",
+    "Cloths and Wear",
+    "Home interiors",
+    "Computer and tech",
+    "Tools, equipments",
+    "Sports & Outdoors",
+    "Animal and pets",
+    "Machinery tools"
+  ];
 
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
   };
 
   return (
-    <div className="min-h-screen p-2 bg-gray-50 flex flex-col">
-      {/* Categories Section - Mobile dropdown */}
-      <div className="lg:hidden p-4 bg-white">
-        <details className="w-full">
-          <summary className="flex justify-between items-center cursor-pointer font-medium text-gray-700">
-            Browse Categories
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </summary>
-          <ul className="mt-2 space-y-2 p-2 bg-gray-50 rounded-lg">
-            {[
-              "Products",
-              "Cloths and Wear",
-              "Home interiors",
-              "Computer and tech",
-              "Tools, equipments",
-              "Sports & Outdoors",
-              "Animal and pets",
-              "Machinery tools"
-            ].map((category) => (
-              <li
-                key={category}
-                onClick={() => handleProductClick(category)}
-                className="text-gray-600 hover:bg-blue-100 p-2 rounded cursor-pointer transition-colors"
-              >
-                {category}
-              </li>
-            ))}
-            <li>
-              <button className="text-blue-500 font-semibold hover:underline p-2">
-                More Category
-              </button>
-            </li>
-          </ul>
-        </details>
+    <div className=" p-2 bg-gray-50 flex flex-col">
+
+      {/* Mobile Categories - Horizontal Scroll */}
+      <div className="lg:hidden p-4 bg-white overflow-x-auto whitespace-nowrap hide-scrollbar">
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => handleProductClick(category)}
+            className="mx-1 px-3 py-2 bg-gray-100 rounded-full text-sm text-blue-600 hover:bg-blue-100 transition-colors"
+          >
+            {category}
+          </button>
+        ))}
+        <button className="mx-1 px-3 py-2 text-blue-500 font-semibold text-sm hover:underline">
+          More Category
+        </button>
       </div>
 
       <div className="w-full flex flex-col lg:flex-row">
-        {/* Categories Section - Desktop */}
+        
+        {/* Desktop Categories - Vertical List */}
         <div className="hidden lg:block w-full lg:w-1/5 bg-white p-2">
           <ul className="rounded-lg">
-            {[
-              "Automobiles",
-              "Cloths and Wear",
-              "Home interiors",
-              "Computer and tech",
-              "Tools, equipments",
-              "Sports & Outdoors",
-              "Animal and pets",
-              "Machinery tools"
-            ].map((category) => (
+            {categories.map((category) => (
               <li
                 key={category}
                 onClick={() => handleProductClick(category)}
@@ -79,6 +61,8 @@ const Hero = () => {
 
         {/* Main Hero Section */}
         <div className="flex p-2 flex-col bg-white lg:flex-row flex-1">
+          
+          {/* Hero Image Section */}
           <div className="relative w-full lg:w-3/4 h-[250px] sm:h-[300px] md:h-[360px]">
             <div
               className="absolute top-2 inset-0 bg-cover bg-center"
@@ -107,18 +91,18 @@ const Hero = () => {
 
           {/* CTA Section */}
           <div className="w-full lg:w-1/4 bg-gradient-to-br from-white to-gray-100 p-2 flex flex-col justify-center">
-            <div className="bg-blue-100 rounded-md p-2 mb-2">
+
+            {/* Login/Signup - Hidden on Mobile */}
+            <div className="hidden lg:block bg-blue-100 rounded-md p-2 mb-2">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="bg-blue-200 rounded-full p-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 md:h-9 md:w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
-                <h2 className="font-medium text-sm sm:text-base text-gray-800">
+                <h2 className=" font-medium text-sm sm:text-base text-gray-800">
                   Hi, user let's get started
                 </h2>
-              </div>
-
               <div className="flex flex-col space-y-2 mb-2">
                 <button className="bg-blue-700 hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-lg transition w-full text-sm sm:text-base">
                   Join now
@@ -129,7 +113,7 @@ const Hero = () => {
               </div>
             </div>
 
-            {/* Promotions */}
+            {/* Offer Boxes */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
               <div className="bg-orange-500 text-white p-3 rounded-md shadow-md text-xs sm:text-sm text-center flex items-center justify-center min-h-[80px]">
                 Get US $10 off with a new supplier
@@ -138,10 +122,13 @@ const Hero = () => {
                 Send quotes with supplier preferences
               </div>
             </div>
+
           </div>
         </div>
       </div>
     </div>
+    </div>
+
   );
 };
 
