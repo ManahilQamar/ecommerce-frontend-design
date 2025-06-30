@@ -1,9 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 const ProductCart = ({ cart, setCart }) => {
   // State for dropdowns and filters
   const [openDropdown, setOpenDropdown] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [sortOption, setSortOption] = useState('newest');
 
   const [filters, setFilters] = useState({
     category: [],
@@ -276,7 +278,24 @@ const ProductCart = ({ cart, setCart }) => {
         'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'
       ]
     }
-  ];
+  ]; 
+
+  // Sort products based on selected option
+  const sortedProducts = useMemo(() => {
+    const sorted = [...products];
+    switch(sortOption) {
+      case 'newest':
+        return sorted.sort((a, b) => b.id - a.id);
+      case 'priceLow':
+        return sorted.sort((a, b) => a.price - b.price);
+      case 'priceHigh':
+        return sorted.sort((a, b) => b.price - a.price);
+      case 'rating':
+        return sorted.sort((a, b) => b.rating - a.rating);
+      default:
+        return sorted;
+    }
+  }, [sortOption, products]);
 
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
@@ -344,6 +363,18 @@ const ProductCart = ({ cart, setCart }) => {
   // View mode handlers
   const handleGridView = () => setViewMode('grid');
   const handleListView = () => setViewMode('list');
+
+  // Close mobile menu when window resizes to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Render product detail view
   const renderProductDetail = (product) => {
@@ -594,73 +625,147 @@ const ProductCart = ({ cart, setCart }) => {
     );
   };
 
+
   // If a product is selected, render its detail view
   if (selectedProduct) {
     return renderProductDetail(selectedProduct);
   }
 
-  // Main product listing view
-  return (
-    <div className="max-w-7xl bg-slate-100 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Filters Section */}
-        <div className="w-full md:w-1/4 p-4">
-          {/* Categories Dropdown */}
-          <div className="mb-4 relative border-b pb-2">
+  // Mobile Filters Sidebar
+  const renderMobileFilters = () => (
+    <div className={`fixed inset-0 z-50 bg-black bg-opacity-50 transition-opacity duration-300 ${
+      isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+    }`} onClick={() => setIsMobileMenuOpen(false)}>
+      <div 
+        className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ${
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="p-4 border-b">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold">Filters</h2>
             <button 
-              onClick={() => toggleDropdown('categories')}
-              className="w-full flex justify-between items-center"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-gray-500 hover:text-gray-700"
             >
-              <span className="font-medium text-black">Categories</span>
-              <svg className={`h-5 w-5 transform ${openDropdown === 'categories' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            {openDropdown === 'categories' && (
-              <div className="mt-2 space-y-2">
-                {categories.map(category => (
-                  <div key={category} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="category"
-                      id={category}
-                      checked={filters.category.includes(category)}
-                      onChange={() => handleFilterChange('category', category)}
-                      className="h-4 w-4 text-blue-600"
-                    />
-                    <label htmlFor={category} className="ml-2 text-gray-900">
+          </div>
+          
+          <div className="mt-4">
+            <button 
+              onClick={() => toggleDropdown('sort')}
+              className="flex justify-between items-center w-full py-2 text-left"
+            >
+              <span>Sort By</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'sort' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {openDropdown === 'sort' && (
+              <div className="mt-2 space-y-2 pl-2">
+                <button 
+                  onClick={() => setSortOption('newest')}
+                  className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'newest' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                >
+                  Newest
+                </button>
+                <button 
+                  onClick={() => setSortOption('priceLow')}
+                  className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'priceLow' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                >
+                  Price: Low to High
+                </button>
+                <button 
+                  onClick={() => setSortOption('priceHigh')}
+                  className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'priceHigh' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                >
+                  Price: High to Low
+                </button>
+                <button 
+                  onClick={() => setSortOption('rating')}
+                  className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'rating' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                >
+                  Top Rated
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="p-4 overflow-y-auto h-[calc(100%-60px)]">
+          {/* Categories */}
+          <div className="mb-6">
+            <button 
+              onClick={() => toggleDropdown('category')}
+              className="flex justify-between items-center w-full py-2 text-left"
+            >
+              <span>Categories</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'category' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </button>
+            
+            {openDropdown === 'category' && (
+              <div className="mt-2 space-y-2 pl-2">
+                {categories.map((category) => (
+                  <div key={category} className="flex justify-between items-center">
+                    <button 
+                      onClick={() => handleFilterChange('category', category)}
+                      className={`py-1 px-2 rounded flex-1 text-left ${filters.category.includes(category) ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                    >
                       {category}
-                      <span className="text-gray-500 text-xs"> ({categoryItemCounts[category]} items)</span>
-                    </label>
+                    </button>
+                    <span className="text-sm text-gray-500 ml-2">({categoryItemCounts[category]})</span>
                   </div>
                 ))}
               </div>
             )}
           </div>
           
-          {/* Brands Dropdown */}
-          <div className="mb-4 relative border-b pb-2">
+          {/* Brand */}
+          <div className="mb-6">
             <button 
-              onClick={() => toggleDropdown('brands')}
-              className="w-full flex justify-between items-center"
+              onClick={() => toggleDropdown('brand')}
+              className="flex justify-between items-center w-full py-2 text-left"
             >
-              <span className="font-medium text-black">Brands</span>
-              <svg className={`h-5 w-5 transform ${openDropdown === 'brands' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <span>Brand</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'brand' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </button>
-            {openDropdown === 'brands' && (
-              <div className="mt-2 space-y-2">
-                {brands.map(brand => (
+            
+            {openDropdown === 'brand' && (
+              <div className="mt-2 space-y-2 pl-2">
+                {brands.map((brand) => (
                   <div key={brand} className="flex items-center">
                     <input
                       type="checkbox"
-                      id={brand}
+                      id={`brand-${brand}`}
                       checked={filters.brand.includes(brand)}
                       onChange={() => handleFilterChange('brand', brand)}
-                      className="h-4 w-4 text-blue-600"
+                      className="mr-2 h-4 w-4 text-blue-600"
                     />
-                    <label htmlFor={brand} className="ml-2 text-gray-900">
+                    <label htmlFor={`brand-${brand}`} className="select-none">
                       {brand}
                     </label>
                   </div>
@@ -668,30 +773,36 @@ const ProductCart = ({ cart, setCart }) => {
               </div>
             )}
           </div>
-
-          {/* Features Dropdown */}
-          <div className="mb-4 relative border-b pb-2">
+          
+          {/* Features */}
+          <div className="mb-6">
             <button 
-              onClick={() => toggleDropdown('features')}
-              className="w-full flex justify-between items-center"
+              onClick={() => toggleDropdown('feature')}
+              className="flex justify-between items-center w-full py-2 text-left"
             >
-              <span className="font-medium text-black">Features</span>
-              <svg className={`h-5 w-5 transform ${openDropdown === 'features' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <span>Features</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'feature' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </button>
-            {openDropdown === 'features' && (
-              <div className="mt-2 space-y-2">
-                {features.map(feature => (
+            
+            {openDropdown === 'feature' && (
+              <div className="mt-2 space-y-2 pl-2">
+                {features.map((feature) => (
                   <div key={feature} className="flex items-center">
                     <input
                       type="checkbox"
-                      id={feature}
+                      id={`feature-${feature}`}
                       checked={filters.feature.includes(feature)}
                       onChange={() => handleFilterChange('feature', feature)}
-                      className="h-4 w-4 text-blue-600"
+                      className="mr-2 h-4 w-4 text-blue-600"
                     />
-                    <label htmlFor={feature} className="ml-2 text-gray-900">
+                    <label htmlFor={`feature-${feature}`} className="select-none">
                       {feature}
                     </label>
                   </div>
@@ -699,69 +810,87 @@ const ProductCart = ({ cart, setCart }) => {
               </div>
             )}
           </div>
-
-          {/* Price Range */}
-          <div className="mb-4 relative border-b pb-2">
+          
+          {/* Price */}
+          <div className="mb-6">
             <button 
               onClick={() => toggleDropdown('price')}
-              className="w-full flex justify-between items-center"
+              className="flex justify-between items-center w-full py-2 text-left"
             >
-              <span className="font-medium text-black">Price Range</span>
-              <svg className={`h-5 w-5 transform ${openDropdown === 'price' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <span>Price Range</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'price' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </button>
+            
             {openDropdown === 'price' && (
-              <div className="mt-4">
+              <div className="mt-4 px-2">
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-900">${filters.minPrice}</span>
-                  <span className="text-sm text-gray-900">${filters.maxPrice}</span>
+                  <span className="text-sm">${filters.minPrice}</span>
+                  <span className="text-sm">${filters.maxPrice}</span>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="relative">
                   <input
                     type="range"
                     min="0"
                     max="500"
                     value={filters.minPrice}
-                    onChange={(e) => handleFilterChange('minPrice', Number(e.target.value))}
-                    className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                    onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value))}
+                    className="absolute w-full h-2 bg-transparent pointer-events-none appearance-none z-20"
                   />
                   <input
                     type="range"
                     min="0"
                     max="500"
                     value={filters.maxPrice}
-                    onChange={(e) => handleFilterChange('maxPrice', Number(e.target.value))}
-                    className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer"
+                    onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
+                    className="absolute w-full h-2 bg-transparent pointer-events-none appearance-none z-20"
                   />
+                  <div className="relative h-2 bg-gray-200 rounded-full">
+                    <div 
+                      className="absolute h-2 bg-blue-500 rounded-full" 
+                      style={{ left: `${(filters.minPrice / 500) * 100}%`, right: `${100 - (filters.maxPrice / 500) * 100}%` }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             )}
           </div>
-
-          {/* Condition Dropdown */}
-          <div className="mb-4 relative border-b pb-2">
+          
+          {/* Condition */}
+          <div className="mb-6">
             <button 
               onClick={() => toggleDropdown('condition')}
-              className="w-full flex justify-between items-center"
+              className="flex justify-between items-center w-full py-2 text-left"
             >
-              <span className="font-medium text-black">Condition</span>
-              <svg className={`h-5 w-5 transform ${openDropdown === 'condition' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <span>Condition</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'condition' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </button>
+            
             {openDropdown === 'condition' && (
-              <div className="mt-2 space-y-2">
-                {conditions.map(condition => (
+              <div className="mt-2 space-y-2 pl-2">
+                {conditions.map((condition) => (
                   <div key={condition} className="flex items-center">
                     <input
                       type="checkbox"
-                      id={condition}
+                      id={`condition-${condition}`}
                       checked={filters.condition.includes(condition)}
                       onChange={() => handleFilterChange('condition', condition)}
-                      className="h-4 w-4 text-blue-600"
+                      className="mr-2 h-4 w-4 text-blue-600"
                     />
-                    <label htmlFor={condition} className="ml-2 text-gray-900">
+                    <label htmlFor={`condition-${condition}`} className="select-none">
                       {condition}
                     </label>
                   </div>
@@ -769,31 +898,37 @@ const ProductCart = ({ cart, setCart }) => {
               </div>
             )}
           </div>
-
-          {/* Ratings Dropdown */}
-          <div className="mb-4 relative">
+          
+          {/* Rating */}
+          <div className="mb-6">
             <button 
-              onClick={() => toggleDropdown('ratings')}
-              className="w-full flex justify-between items-center"
+              onClick={() => toggleDropdown('rating')}
+              className="flex justify-between items-center w-full py-2 text-left"
             >
-              <span className="font-medium text-black">Customer Rating</span>
-              <svg className={`h-5 w-5 transform ${openDropdown === 'ratings' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <span>Rating</span>
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-5 w-5 transform transition-transform ${openDropdown === 'rating' ? 'rotate-180' : ''}`} 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </svg>
             </button>
-            {openDropdown === 'ratings' && (
-              <div className="mt-2 space-y-2">
-                {ratings.map(rating => (
+            
+            {openDropdown === 'rating' && (
+              <div className="mt-2 space-y-2 pl-2">
+                {ratings.map((rating) => (
                   <div key={rating} className="flex items-center">
                     <input
                       type="radio"
-                      id={`${rating}stars`}
+                      id={`rating-${rating}`}
                       name="rating"
                       checked={filters.rating === rating}
                       onChange={() => handleFilterChange('rating', rating)}
-                      className="h-4 w-4 text-blue-600"
+                      className="mr-2 h-4 w-4 text-blue-600"
                     />
-                    <label htmlFor={`${rating}stars`} className="ml-2 text-gray-900 flex items-center">
+                    <label htmlFor={`rating-${rating}`} className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <svg 
                           key={i} 
@@ -804,7 +939,7 @@ const ProductCart = ({ cart, setCart }) => {
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
                       ))}
-                      <span className="ml-1">& Up</span>
+                      <span className="ml-1">& up</span>
                     </label>
                   </div>
                 ))}
@@ -812,70 +947,438 @@ const ProductCart = ({ cart, setCart }) => {
             )}
           </div>
           
+          {/* Apply Filters Button */}
           <button 
-            onClick={() => setFilters({
-              category: [],
-              brand: [],
-              feature: [],
-              minPrice: 0,
-              maxPrice: 500,
-              condition: [],
-              rating: 0
-            })}
-            className="w-full mt-4 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            onClick={() => setIsMobileMenuOpen(false)}
           >
-            Reset Filters
+            Apply Filters
           </button>
         </div>
+      </div>
+    </div>
+  );
 
-        {/* Product Grid Section */}
-        <div className="w-full md:w-3/4">
-          {/* CATEGORIES FILTER BAR */}
-          <div className="rounded-lg shadow-md bg-white p-4 mb-3">
-            <div className="flex flex-wrap items-center justify-between">
-              {filters.category.length === 0 ? (
-                <span className="text-blue-300 text-sm">No category selected</span>
-              ) : (
-                filters.category.map(cat => (
-                  <div key={`category-${cat}`}>
-                    <span className="text-gray-600 mr-1">
-                      {categoryItemCounts[cat]} items in
-                    </span>
-                    <span className="text-sm font-medium">
-                      {cat} 
-                    </span>
+  return (
+    <div className="min-h-screen bg-slate-50">
+      {/* Mobile Filters Sidebar */}
+      {renderMobileFilters()}
+      
+      <div className=" max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Mobile Header */}
+        <div className="lg:hidden flex justify-between items-center mb-6">
+          <button 
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="flex items-center text-gray-700"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="ml-2 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+          
+          <div className="flex items-center">
+            <span className="mr-2 text-gray-600">Sort:</span>
+            <div className="relative">
+              <select 
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                className="appearance-none bg-white border border-gray-300 rounded py-1 pl-2 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="newest">Newest</option>
+                <option value="priceLow">Price: Low to High</option>
+                <option value="priceHigh">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <button 
+              onClick={handleGridView}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+            <button 
+              onClick={handleListView}
+              className={`p-2 rounded ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex flex-col lg:flex-row">
+          {/* Filters Sidebar - Hidden on mobile */}
+          <div className="hidden lg:block w-64 mr-8">
+            <div className=" rounded-lg  p-4 sticky top-4">
+              <h2 className="text-xl font-bold mb-4">Filters</h2>
+              
+              {/* Sort By */}
+              <div className="hidden mb-6">
+                <button 
+                  onClick={() => toggleDropdown('sort')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Sort By</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'sort' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'sort' && (
+                  <div className="mt-2 space-y-2 pl-2">
+                    <button 
+                      onClick={() => setSortOption('newest')}
+                      className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'newest' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                    >
+                      Newest
+                    </button>
+                    <button 
+                      onClick={() => setSortOption('priceLow')}
+                      className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'priceLow' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                    >
+                      Price: Low to High
+                    </button>
+                    <button 
+                      onClick={() => setSortOption('priceHigh')}
+                      className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'priceHigh' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                    >
+                      Price: High to Low
+                    </button>
+                    <button 
+                      onClick={() => setSortOption('rating')}
+                      className={`block w-full text-left py-1 px-2 rounded ${sortOption === 'rating' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                    >
+                      Top Rated
+                    </button>
                   </div>
-                ))
-              )}
-              <div className='flex '>
-                <div className="flex items-center mr-2">
-                  <input
-                    type="checkbox"
-                    id="verifiedOnly"
-                    className="h-4 w-4 text-blue-600"
-                  />
-                  <label htmlFor="verifiedOnly" className="ml-2 text-gray-700">
-                    Verified Only
-                  </label>
-                </div>
-                <div className="relative">
-                  <select className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-1 px-4 pr-4 rounded leading-tight focus:outline-none focus:border-blue-500">
-                    <option>Featured</option>
-                    <option>Price: Low to High</option>
-                    <option>Price: High to Low</option>
-                    <option>Top Rated</option>
-                    <option>Newest Arrivals</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                    </svg>
+                )}
+              </div>
+              
+              {/* Categories */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => toggleDropdown('category')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Categories</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'category' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'category' && (
+                  <div className="mt-2 space-y-2 pl-2">
+                    {categories.map((category) => (
+                      <div key={category} className="flex justify-between items-center">
+                        <button 
+                          onClick={() => handleFilterChange('category', category)}
+                          className={`py-1 px-2 rounded flex-1 text-left ${filters.category.includes(category) ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
+                        >
+                          {category}
+                        </button>
+                        <span className="text-sm text-gray-500 ml-2">({categoryItemCounts[category]})</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Brand */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => toggleDropdown('brand')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Brand</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'brand' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'brand' && (
+                  <div className="mt-2 space-y-2 pl-2">
+                    {brands.map((brand) => (
+                      <div key={brand} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`brand-${brand}`}
+                          checked={filters.brand.includes(brand)}
+                          onChange={() => handleFilterChange('brand', brand)}
+                          className="mr-2 h-4 w-4 text-blue-600"
+                        />
+                        <label htmlFor={`brand-${brand}`} className="select-none">
+                          {brand}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Features */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => toggleDropdown('feature')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Features</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'feature' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'feature' && (
+                  <div className="mt-2 space-y-2 pl-2">
+                    {features.map((feature) => (
+                      <div key={feature} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`feature-${feature}`}
+                          checked={filters.feature.includes(feature)}
+                          onChange={() => handleFilterChange('feature', feature)}
+                          className="mr-2 h-4 w-4 text-blue-600"
+                        />
+                        <label htmlFor={`feature-${feature}`} className="select-none">
+                          {feature}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Price */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => toggleDropdown('price')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Price Range</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'price' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'price' && (
+                  <div className="mt-4 px-2">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm">${filters.minPrice}</span>
+                      <span className="text-sm">${filters.maxPrice}</span>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="range"
+                        min="0"
+                        max="500"
+                        value={filters.minPrice}
+                        onChange={(e) => handleFilterChange('minPrice', parseInt(e.target.value))}
+                        className="absolute w-full h-2 bg-transparent pointer-events-none appearance-none z-20"
+                      />
+                      <input
+                        type="range"
+                        min="0"
+                        max="500"
+                        value={filters.maxPrice}
+                        onChange={(e) => handleFilterChange('maxPrice', parseInt(e.target.value))}
+                        className="absolute w-full h-2 bg-transparent pointer-events-none appearance-none z-20"
+                      />
+                      <div className="relative h-2 bg-gray-200 rounded-full">
+                        <div 
+                          className="absolute h-2 bg-blue-500 rounded-full" 
+                          style={{ left: `${(filters.minPrice / 500) * 100}%`, right: `${100 - (filters.maxPrice / 500) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              {/* Condition */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => toggleDropdown('condition')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Condition</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'condition' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'condition' && (
+                  <div className="mt-2 space-y-2 pl-2">
+                    {conditions.map((condition) => (
+                      <div key={condition} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          id={`condition-${condition}`}
+                          checked={filters.condition.includes(condition)}
+                          onChange={() => handleFilterChange('condition', condition)}
+                          className="mr-2 h-4 w-4 text-blue-600"
+                        />
+                        <label htmlFor={`condition-${condition}`} className="select-none">
+                          {condition}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Rating */}
+              <div className="mb-6">
+                <button 
+                  onClick={() => toggleDropdown('rating')}
+                  className="flex justify-between items-center w-full py-2 text-left"
+                >
+                  <span>Rating</span>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className={`h-5 w-5 transform transition-transform ${openDropdown === 'rating' ? 'rotate-180' : ''}`} 
+                    viewBox="0 0 20 20" 
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {openDropdown === 'rating' && (
+                  <div className="mt-2 space-y-2 pl-2">
+                    {ratings.map((rating) => (
+                      <div key={rating} className="flex items-center">
+                        <input
+                          type="radio"
+                          id={`rating-${rating}`}
+                          name="rating"
+                          checked={filters.rating === rating}
+                          onChange={() => handleFilterChange('rating', rating)}
+                          className="mr-2 h-4 w-4 text-blue-600"
+                        />
+                        <label htmlFor={`rating-${rating}`} className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <svg 
+                              key={i} 
+                              className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`} 
+                              fill="currentColor" 
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                          <span className="ml-1">& up</span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+             
+    {/* Main Content */}
+    <div className="">
+            {/* Active Filters - Hidden on mobile */}
+            <div className="hidden lg:flex justify-between items-center mb-4">
+              <div className=" - items-center">
+               
+
+  {/* Product Grid Section */}
+  <div className="w-[50rem] md:w-9/10">
+
+<div className='bg-white rounded-lg shadow-md p-4 mb-3'>
+  <div className="flex items-center space-x-4 justify-between">
+                  {/* CATEGORIES FILTER BAR */}
+  <div className="">
+    <div className="flex flex-wrap items-center justify-between">
+      {filters.category.length === 0 ? (
+        <span className="text-blue-300 text-sm">No category selected</span>
+      ) : (
+        filters.category.map(cat => (
+          <div key={`category-${cat}`}>
+            <span className="text-gray-600 mr-1">
+              {categoryItemCounts[cat]} items in
+            </span>
+            <span className="text-sm font-medium">
+              {cat} 
+            </span>
+          </div>
+        ))
+      )}
+     
+    </div>
+  </div>
+                <div className="flex items-center">
+                  <span className="mr-2 text-gray-600">Sort:</span>
+                  <div className="relative">
+                    <select 
+                      value={sortOption}
+                      onChange={(e) => setSortOption(e.target.value)}
+                      className="appearance-none bg-white border border-gray-300 rounded py-1 pl-2 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="newest">Newest</option>
+                      <option value="priceLow">Price: Low to High</option>
+                      <option value="priceHigh">Price: High to Low</option>
+                      <option value="rating">Top Rated</option>
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                      <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-                <div className="flex ml-2 items-center rounded-sm border overflow-hidden">
+                
+                <div className="flex items-center space-x-2">
                   <button 
                     onClick={handleGridView}
-                    className={`p-1 ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-slate-200 hover:text-blue-600'}`}
+                    className={`p-2 rounded ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -883,7 +1386,7 @@ const ProductCart = ({ cart, setCart }) => {
                   </button>
                   <button 
                     onClick={handleListView}
-                    className={`p-1 ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-slate-200 hover:text-blue-600'}`}
+                    className={`p-2 rounded ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -891,228 +1394,216 @@ const ProductCart = ({ cart, setCart }) => {
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* OTHER FILTERS BAR */}
-          <div className="rounded-lg bg-white p-4 mb-6 shadow-md">
-            <div className="flex flex-wrap items-center justify-between">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-medium text-gray-700">Filters:</span>
-                
-                {/* Brand Filters */}
-                {filters.brand.map(brand => (
-                  <div key={`brand-${brand}`} className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
-                    <span className="text-sm font-medium"> {brand}</span>
-                    <button 
-                      onClick={() => removeFilter('brand', brand)}
-                      className="ml-2 text-gray-500 hover:text-black"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-
-                {/* Feature Filters */}
-                {filters.feature.map(feature => (
-                  <div key={`feature-${feature}`} className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
-                    <span className="text-sm font-medium">{feature}</span>
-                    <button 
-                      onClick={() => removeFilter('feature', feature)}
-                      className="ml-2 text-gray-500 hover:text-black"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-
-                {/* Price Filter */}
-                {(filters.minPrice > 0 || filters.maxPrice < 500) && (
-                  <div className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
-                    <span className="text-sm font-medium">
-                      ${filters.minPrice} - ${filters.maxPrice}
-                    </span>
-                    <button 
-                      onClick={() => {
-                        handleFilterChange('minPrice', 0);
-                        handleFilterChange('maxPrice', 500);
-                      }}
-                      className="ml-2 text-gray-500 hover:text-black"
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-
-                {/* Condition Filters */}
-                {filters.condition.map(cond => (
-                  <div key={`condition-${cond}`} className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
-                    <span className="text-sm font-medium">{cond}</span>
-                    <button 
-                      onClick={() => removeFilter('condition', cond)}
-                      className="ml-2 text-gray-500 hover:text-black"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
-
-                {/* Rating Filter */}
-                {filters.rating > 0 && (
-                  <div className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
-                    <span className="text-sm font-medium">{filters.rating}+ Stars</span>
-                    <button 
-                      onClick={() => handleFilterChange('rating', 0)}
-                      className="ml-2 text-gray-500 hover:text-black"
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-
-                {/* Show message when no filters are applied */}
-                {activeFilterCount === 0 && (
-                  <span className="text-blue-300 text-sm">No filters applied</span>
-                )}
               </div>
 
-              <div className="flex items-center gap-3">
-                {/* Clear All Filters Button */}
-                {activeFilterCount > 0 && (
-                  <button
-                    onClick={() => setFilters(prev => ({
-                      ...prev,
-                      brand: [],
-                      feature: [],
-                      minPrice: 0,
-                      maxPrice: 500,
-                      condition: [],
-                      rating: 0
-                    }))}
-                    className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                  >
-                    Clear all filters
-                  </button>
-                )}
-
-                {/* Filter Button for Mobile */}
-                <div className="md:hidden flex items-center">
-                  <button
-                    className="flex items-center text-blue-500"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-                    </svg>
-                    Filters
-                    {activeFilterCount > 0 && (
-                      <span className="ml-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {activeFilterCount}
-                      </span>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
+  {/* OTHER FILTERS BAR */}
+  <div className="rounded-lg bg-white p-4 mb- shadow-md">
+    <div className="flex flex-wrap items-center justify-between">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-medium text-gray-700">Filters:</span>
+        
+        {/* Brand Filters */}
+        {filters.brand.map(brand => (
+          <div key={`brand-${brand}`} className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
+            <span className="text-sm font-medium"> {brand}</span>
+            <button 
+              onClick={() => removeFilter('brand', brand)}
+              className="ml-2 text-gray-500 hover:text-black"
+            >
+              ×
+            </button>
           </div>
+        ))}
 
-          {/* Product Grid/List */}
-          <div className={`${viewMode === 'grid' 
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' 
-            : 'space-y-6'}`}
+        {/* Feature Filters */}
+        {filters.feature.map(feature => (
+          <div key={`feature-${feature}`} className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
+            <span className="text-sm font-medium">{feature}</span>
+            <button 
+              onClick={() => removeFilter('feature', feature)}
+              className="ml-2 text-gray-500 hover:text-black"
+            >
+              ×
+            </button>
+          </div>
+        ))}
+
+        {/* Price Filter */}
+        {(filters.minPrice > 0 || filters.maxPrice < 500) && (
+          <div className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
+            <span className="text-sm font-medium">
+              ${filters.minPrice} - ${filters.maxPrice}
+            </span>
+            <button 
+              onClick={() => {
+                handleFilterChange('minPrice', 0);
+                handleFilterChange('maxPrice', 500);
+              }}
+              className="ml-2 text-gray-500 hover:text-black"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {/* Condition Filters */}
+        {filters.condition.map(cond => (
+          <div key={`condition-${cond}`} className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
+            <span className="text-sm font-medium">{cond}</span>
+            <button 
+              onClick={() => removeFilter('condition', cond)}
+              className="ml-2 text-gray-500 hover:text-black"
+            >
+              ×
+            </button>
+          </div>
+        ))}
+
+        {/* Rating Filter */}
+        {filters.rating > 0 && (
+          <div className="flex items-center border border-blue-500 bg-blue-50 rounded-md px-3 py-1">
+            <span className="text-sm font-medium">{filters.rating}+ Stars</span>
+            <button 
+              onClick={() => handleFilterChange('rating', 0)}
+              className="ml-2 text-gray-500 hover:text-black"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {/* Show message when no filters are applied */}
+        {activeFilterCount === 0 && (
+          <span className="text-blue-300 text-sm">No filters applied</span>
+        )}
+      </div>
+
+      <div className="flex items-center gap-3">
+        {/* Clear All Filters Button */}
+        {activeFilterCount > 0 && (
+          <button
+            onClick={() => setFilters(prev => ({
+              ...prev,
+              brand: [],
+              feature: [],
+              minPrice: 0,
+              maxPrice: 500,
+              condition: [],
+              rating: 0
+            }))}
+            className="text-blue-500 hover:text-blue-700 text-sm font-medium"
           >
-            {products.map((product) => (
-              <div 
-                key={product.id} 
-                className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition ${
-                  viewMode === 'list' ? 'flex' : 'block'
-                }`}
-              >
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className={`${viewMode === 'list' 
-                    ? 'w-48 h-48 flex-shrink-0 object-cover' 
-                    : 'w-full h-48 object-cover'}`} 
-                />
-                
-                <div className={`p-4 ${viewMode === 'list' ? 'flex-grow' : ''}`}>
-                  <h3 className="font-bold text-lg mb-1">{product.name}</h3>
-                  <p className="text-gray-800 font-bold">${product.price.toFixed(2)} <span className='text-sm text-gray-400 line-through ml-2'>${product.originalPrice.toFixed(2)}</span></p>
-                  <div className="flex items-center mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <svg 
-                        key={i} 
-                        className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-orange-500' : 'text-gray-300'}`} 
-                        fill="currentColor" 
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                    {viewMode === 'list' && (
-                      <div className="flex items-center">
-                        <span className="ml-1 text-orange-500">{product.rating}</span>
-                        <span className="mx-1 ml-2 text-gray-400">•</span>
-                        <span className='text-gray-400'>{product.orders} orders</span>
-                        <span className="mx-1 text-gray-400">•</span>
-                        <span className="text-green-600 font-medium ml-2">{product.shipping}</span>
-                      </div>
-                    )}
+            Clear all filters
+          </button>
+        )}
+
+        {/* Filter Button for Mobile */}
+        <div className="md:hidden flex items-center">
+          <button
+            className="flex items-center text-blue-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
+            </svg>
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="ml-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+              </div>
+              
+            </div>
+          
+      
+            {/* Products Grid/List */}
+            <div className={viewMode === 'grid' 
+              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
+              : 'space-y-6'
+            }>
+              {sortedProducts.map((product) => (
+                <div 
+                  key={product.id} 
+                  className={`bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition ${
+                    viewMode === 'list' ? 'flex' : ''
+                  }`}
+                  onClick={() => setSelectedProduct(product)}
+                >
+                  <div className={`${viewMode === 'list' ? 'w-1/3' : 'w-full'} h-48 overflow-hidden`}>
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    />
                   </div>
-                 
-                  {viewMode === 'list' && (
-                    <p className="mt-3 text-gray-600">
-                      {product.description.substring(0, 100)}...
-                    </p>
-                  )}
-                  <div className="mt-3 justify-between flex">
+                  
+                  <div className={`p-4 ${viewMode === 'list' ? 'w-2/3' : ''}`}>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold mb-1">{product.name}</h3>
+                        <div className="flex items-center mb-2">
+                          {[...Array(5)].map((_, i) => (
+                            <svg 
+                              key={i} 
+                              className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-orange-500' : 'text-gray-300'}`} 
+                              fill="currentColor" 
+                              viewBox="0 0 20 20"
+                            >
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
+                          <span className="ml-1 text-sm text-gray-600">({product.ratingCount})</span>
+                        </div>
+                      </div>
+                      <button className="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    <div className="mb-3">
+                      <span className="text-lg font-bold text-gray-800">${product.price.toFixed(2)}</span>
+                      {product.originalPrice && (
+                        <span className="ml-2 text-sm text-gray-500 line-through">${product.originalPrice.toFixed(2)}</span>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center text-sm text-gray-600 mb-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                      {product.orders} sold
+                    </div>
+                    
+                    <div className="flex items-center text-sm text-gray-600 mb-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                      </svg>
+                      {product.shipping}
+                    </div>
+                    
                     <button 
-                      onClick={() => setSelectedProduct(product)}
-                      className="text-blue-600 hover:text-blue-400 transition"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(product);
+                      }}
+                      className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition flex items-center justify-center"
                     >
-                      View Details
-                    </button>
-                    <button 
-                      onClick={() => handleAddToCart(product)}
-                      className="text-blue-600 hover:text-blue-400 transition"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
+                      Add to Cart
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination Section */}
-          <div className="flex items-center justify-between mt-8">
-            {/* Show per page dropdown */}
-            <div className="flex items-center">
-              <div className="relative left-[450px]">
-                <select className="block appearance-none  w-30 bg-white border border-gray-300 text-gray-700 py-1 px-2 pr-8 rounded leading-tight focus:outline-none focus:border-blue-500">
-                  <option>Show 10</option>
-                  <option>Show 20</option>
-                  <option>Show 50</option>
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Pagination buttons */}
-            <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-              <button className="px-3 py-1 border-r border-gray-300 hover:bg-gray-100">
-                &lt;
-              </button>
-              <button className="px-3 py-1 border-r border-gray-300 bg-blue-500 text-white">1</button>
-              <button className="px-3 py-1 border-r border-gray-300 hover:bg-gray-100">2</button>
-              <button className="px-3 py-1 border-r border-gray-300 hover:bg-gray-100">3</button>
-              <button className="px-3 py-1 hover:bg-gray-100">&gt;</button>
+              ))}
             </div>
           </div>
         </div>
@@ -1122,3 +1613,6 @@ const ProductCart = ({ cart, setCart }) => {
 };
 
 export default ProductCart;
+
+
+

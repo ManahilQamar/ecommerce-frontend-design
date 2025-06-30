@@ -94,15 +94,15 @@ const Hero = () => {
 
             {/* Login/Signup - Hidden on Mobile */}
             <div className="hidden lg:block bg-blue-100 rounded-md p-2 mb-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="bg-blue-200 rounded-full p-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 md:h-9 md:w-9" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className=" items-center  mb-4">
+                <div className="flex mb-3 mt-2 gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-7 md:h-9 md:w-9 text-white bg-blue-200 rounded-full p-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                </div>
                 <h2 className=" font-medium text-sm sm:text-base text-gray-800">
                   Hi, user let's get started
                 </h2>
+                </div>
               <div className="flex flex-col space-y-2 mb-2">
                 <button className="bg-blue-700 hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-lg transition w-full text-sm sm:text-base">
                   Join now
