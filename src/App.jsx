@@ -1,7 +1,6 @@
+// src/App.js
 import { Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
-
-// Components
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import Deals from './components/Deals/Deals';
@@ -14,46 +13,55 @@ import Region from './components/Region/Region';
 import Subscribe from './components/Subscribe/Subscribe';
 import Footer from './components/Footer/Footer';
 import LastLine from './components/LastLine/LastLine';
-import ProductCart from './components/ProductCart/ProductCart';
+import ProductCard from "./components/ProductCard/ProductCard";
+import SearchResults from './components/SearchResults/SearchResults';
 import { CartPage } from './components/CartPage/CartPage';
+import { products } from './data/products';
 
 const App = () => {
   const [cart, setCart] = useState([]);
 
   return (
-    <div>
-      <Navbar cart={cart} />
+    <div className="min-h-screen flex flex-col">
+      <Navbar cart={cart} setCart={setCart} />
+      
+      <main className="flex-grow">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Hero />
+                <Deals />
+                <Outdoor />
+                <ConsumerSection />
+                <Suppliers />
+                <RecommendedItems />
+                <ExtraServices />
+                <Region />
+                <Subscribe />
+                <Footer />
+                <LastLine />
+              </>
+            }
+          />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Hero />
-              <Deals />
-              <Outdoor />
-              <ConsumerSection />
-              <Suppliers />
-              <RecommendedItems />
-              <ExtraServices />
-              <Region />
-              <Subscribe />
-              <Footer />
-              <LastLine />
-            </>
-          }
-        />
-
-        <Route 
-          path="/product/:id" 
-          element={<ProductCart cart={cart} setCart={setCart} />} 
-        />
-
-        <Route 
-          path="/cart" 
-          element={<CartPage cart={cart} setCart={setCart} />} 
-        />
-      </Routes>
+          <Route 
+            path="/product/:id" 
+            element={<ProductCard cart={cart} setCart={setCart} products={products} />} 
+          />
+          
+          <Route 
+            path="/cart" 
+            element={<CartPage cart={cart} setCart={setCart} />} 
+          />
+          
+          <Route 
+            path="/search" 
+            element={<SearchResults products={products} />} 
+          />
+        </Routes>
+      </main>
     </div>
   );
 };

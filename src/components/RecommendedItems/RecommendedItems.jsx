@@ -88,3 +88,4 @@ const RecommendedItems = () => {
 };
 
 export default RecommendedItems;
+
